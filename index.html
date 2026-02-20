@@ -395,17 +395,17 @@
             position: relative;
         }
 
-        .passenger-avatar.wife {
+        .passenger-avatar.diana {
             background: linear-gradient(135deg, #ff6b9d, #c44dff);
             box-shadow: 0 0 16px rgba(255,107,157,0.4);
         }
 
-        .passenger-avatar.child1 {
+        .passenger-avatar.luca {
             background: linear-gradient(135deg, #00e676, #00bfa5);
             box-shadow: 0 0 16px rgba(0,230,118,0.4);
         }
 
-        .passenger-avatar.child2 {
+        .passenger-avatar.ellie {
             background: linear-gradient(135deg, #ffab40, #ff6e40);
             box-shadow: 0 0 16px rgba(255,171,64,0.4);
         }
@@ -447,6 +447,68 @@
 
         .coord-value {
             color: var(--glow-cyan);
+        }
+
+        /* Drive Card */
+        .drive-card {
+            background: linear-gradient(135deg, rgba(0,18,40,0.95), rgba(20,40,60,0.8));
+        }
+
+        .drive-route {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .drive-point {
+            text-align: center;
+        }
+
+        .drive-point-name {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .drive-point-detail {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .drive-arrow {
+            font-size: 20px;
+            color: var(--glow-cyan);
+            padding: 0 8px;
+        }
+
+        .drive-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .drive-stat {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .drive-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--glow-cyan);
+        }
+
+        .drive-stat-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
         /* Bottom Bar */
@@ -541,9 +603,9 @@
         }
 
         .mini-avatar:first-child { margin-left: 0; }
-        .mini-avatar.wife { background: linear-gradient(135deg, #ff6b9d, #c44dff); }
-        .mini-avatar.child1 { background: linear-gradient(135deg, #00e676, #00bfa5); }
-        .mini-avatar.child2 { background: linear-gradient(135deg, #ffab40, #ff6e40); }
+        .mini-avatar.diana { background: linear-gradient(135deg, #ff6b9d, #c44dff); }
+        .mini-avatar.luca { background: linear-gradient(135deg, #00e676, #00bfa5); }
+        .mini-avatar.ellie { background: linear-gradient(135deg, #ffab40, #ff6e40); }
 
         /* Airport markers */
         .airport-marker {
@@ -594,9 +656,9 @@
     <div class="plane-label-3d" id="planeLabel">
         <div class="plane-label-inner">
             <div class="mini-avatars">
-                <div class="mini-avatar wife">👩</div>
-                <div class="mini-avatar child1">👦</div>
-                <div class="mini-avatar child2">👧</div>
+                <div class="mini-avatar diana">👩</div>
+                <div class="mini-avatar luca">👦</div>
+                <div class="mini-avatar ellie">👧</div>
             </div>
             <div>
                 <div class="fl-num">UA 1449</div>
@@ -656,7 +718,7 @@
             </div>
             <div class="time-row">
                 <div class="time-block">
-                    <div class="time-value" id="depTime">8:23 AM</div>
+                    <div class="time-value" id="depTime">7:52 AM</div>
                     <div class="time-label">Departure</div>
                     <div class="time-zone">CST (UTC-6)</div>
                 </div>
@@ -665,7 +727,7 @@
                     <span id="statusText">SCHEDULED</span>
                 </div>
                 <div class="time-block">
-                    <div class="time-value" id="arrTime">1:00 PM</div>
+                    <div class="time-value" id="arrTime">12:22 PM</div>
                     <div class="time-label">Arrival</div>
                     <div class="time-zone">EST (UTC-5)</div>
                 </div>
@@ -727,28 +789,58 @@
             <div class="card-header"><span class="icon">👨‍👩‍👧‍👦</span> Passengers Onboard</div>
             <div class="passengers">
                 <div class="passenger">
-                    <div class="passenger-avatar wife">👩</div>
+                    <div class="passenger-avatar diana">👩</div>
                     <div class="passenger-info">
-                        <div class="passenger-name">Wife</div>
+                        <div class="passenger-name">Diana</div>
                         <div class="passenger-detail">Seat 14A · Window</div>
                     </div>
-                    <div class="passenger-status" id="wifeStatus">💕</div>
+                    <div class="passenger-status" id="dianaStatus">💕</div>
                 </div>
                 <div class="passenger">
-                    <div class="passenger-avatar child1">👦</div>
+                    <div class="passenger-avatar luca">👦</div>
                     <div class="passenger-info">
-                        <div class="passenger-name">Child 1</div>
+                        <div class="passenger-name">Luca</div>
                         <div class="passenger-detail">Seat 14B · Middle</div>
                     </div>
-                    <div class="passenger-status" id="child1Status">🎮</div>
+                    <div class="passenger-status" id="lucaStatus">🎮</div>
                 </div>
                 <div class="passenger">
-                    <div class="passenger-avatar child2">👧</div>
+                    <div class="passenger-avatar ellie">👧</div>
                     <div class="passenger-info">
-                        <div class="passenger-name">Child 2</div>
+                        <div class="passenger-name">Ellie</div>
                         <div class="passenger-detail">Seat 14C · Aisle</div>
                     </div>
-                    <div class="passenger-status" id="child2Status">📖</div>
+                    <div class="passenger-status" id="ellieStatus">📖</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drive Time Card -->
+        <div class="card drive-card">
+            <div class="card-header"><span class="icon">🚗</span> Pickup Drive</div>
+            <div class="drive-route">
+                <div class="drive-point">
+                    <div class="drive-point-name">Sparta, NJ</div>
+                    <div class="drive-point-detail">Home</div>
+                </div>
+                <div class="drive-arrow">→</div>
+                <div class="drive-point">
+                    <div class="drive-point-name">EWR</div>
+                    <div class="drive-point-detail">Newark Liberty Intl</div>
+                </div>
+            </div>
+            <div class="drive-stats">
+                <div class="drive-stat">
+                    <div class="drive-stat-value">~55m</div>
+                    <div class="drive-stat-label">Drive Time</div>
+                </div>
+                <div class="drive-stat">
+                    <div class="drive-stat-value">47 mi</div>
+                    <div class="drive-stat-label">Distance</div>
+                </div>
+                <div class="drive-stat">
+                    <div class="drive-stat-value">I-80 E</div>
+                    <div class="drive-stat-label">Via</div>
                 </div>
             </div>
         </div>
@@ -808,66 +900,60 @@
             number: 'UA1449',
             from: { code: 'AUS', name: 'Austin', lat: 30.1945, lon: -97.6699 },
             to:   { code: 'EWR', name: 'Newark', lat: 40.6925, lon: -74.1687 },
-            // Times in UTC
-            departureUTC: new Date('2026-02-20T14:23:00Z'),
-            arrivalUTC:   new Date('2026-02-20T18:00:00Z'),
+            departureUTC: new Date('2026-02-20T13:52:00Z'),  // 7:52 AM CST
+            arrivalUTC:   new Date('2026-02-20T17:22:00Z'),  // 12:22 PM EST
             totalDistMi: 1502,
             cruiseAltFt: 36000,
             cruiseSpeedMph: 530,
         };
 
         const DEG = Math.PI / 180;
-        const EARTH_RADIUS = 5; // three.js units for globe
+        const EARTH_RADIUS = 5;
 
-        // Great-circle interpolation
         function lerp(a, b, t) { return a + (b - a) * t; }
         function toRad(d) { return d * DEG; }
         function toDeg(r) { return r / DEG; }
 
         function greatCirclePoint(lat1, lon1, lat2, lon2, t) {
-            const φ1 = toRad(lat1), λ1 = toRad(lon1);
-            const φ2 = toRad(lat2), λ2 = toRad(lon2);
+            const p1 = toRad(lat1), l1 = toRad(lon1);
+            const p2 = toRad(lat2), l2 = toRad(lon2);
             const d = 2 * Math.asin(Math.sqrt(
-                Math.pow(Math.sin((φ2 - φ1) / 2), 2) +
-                Math.cos(φ1) * Math.cos(φ2) * Math.pow(Math.sin((λ2 - λ1) / 2), 2)
+                Math.pow(Math.sin((p2 - p1) / 2), 2) +
+                Math.cos(p1) * Math.cos(p2) * Math.pow(Math.sin((l2 - l1) / 2), 2)
             ));
             if (d < 1e-10) return { lat: lat1, lon: lon1 };
             const A = Math.sin((1 - t) * d) / Math.sin(d);
             const B = Math.sin(t * d) / Math.sin(d);
-            const x = A * Math.cos(φ1) * Math.cos(λ1) + B * Math.cos(φ2) * Math.cos(λ2);
-            const y = A * Math.cos(φ1) * Math.sin(λ1) + B * Math.cos(φ2) * Math.sin(λ2);
-            const z = A * Math.sin(φ1) + B * Math.sin(φ2);
+            const x = A * Math.cos(p1) * Math.cos(l1) + B * Math.cos(p2) * Math.cos(l2);
+            const y = A * Math.cos(p1) * Math.sin(l1) + B * Math.cos(p2) * Math.sin(l2);
+            const z = A * Math.sin(p1) + B * Math.sin(p2);
             return { lat: toDeg(Math.atan2(z, Math.sqrt(x * x + y * y))), lon: toDeg(Math.atan2(y, x)) };
         }
 
         function bearing(lat1, lon1, lat2, lon2) {
-            const φ1 = toRad(lat1), φ2 = toRad(lat2);
-            const Δλ = toRad(lon2 - lon1);
-            const y = Math.sin(Δλ) * Math.cos(φ2);
-            const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+            const p1 = toRad(lat1), p2 = toRad(lat2);
+            const dl = toRad(lon2 - lon1);
+            const y = Math.sin(dl) * Math.cos(p2);
+            const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
             return (toDeg(Math.atan2(y, x)) + 360) % 360;
         }
 
         function latLonToVec3(lat, lon, radius) {
-            const φ = toRad(90 - lat);
-            const θ = toRad(lon + 180);
+            const phi = toRad(90 - lat);
+            const theta = toRad(lon + 180);
             return new THREE.Vector3(
-                -radius * Math.sin(φ) * Math.cos(θ),
-                radius * Math.cos(φ),
-                radius * Math.sin(φ) * Math.sin(θ)
+                -radius * Math.sin(phi) * Math.cos(theta),
+                radius * Math.cos(phi),
+                radius * Math.sin(phi) * Math.sin(theta)
             );
         }
 
-        // Altitude profile: climb → cruise → descend
         function altitudeProfile(t) {
             const cruise = FLIGHT.cruiseAltFt;
             if (t < 0) return 0;
             if (t > 1) return 0;
-            if (t < 0.08) return cruise * (t / 0.08) * (t / 0.08); // climb
-            if (t > 0.88) {
-                const d = (t - 0.88) / 0.12;
-                return cruise * (1 - d * d);
-            }
+            if (t < 0.08) return cruise * (t / 0.08) * (t / 0.08);
+            if (t > 0.88) { const d = (t - 0.88) / 0.12; return cruise * (1 - d * d); }
             return cruise;
         }
 
@@ -877,7 +963,7 @@
             if (t > 1) return 0;
             if (t < 0.08) return lerp(0, cruise, t / 0.08);
             if (t > 0.88) return lerp(cruise, 160, (t - 0.88) / 0.12);
-            return cruise + Math.sin(t * 40) * 8; // slight variation
+            return cruise + Math.sin(t * 40) * 8;
         }
 
         // =============================================================
@@ -902,120 +988,45 @@
         // Stars
         const starGeo = new THREE.BufferGeometry();
         const starVerts = [];
-        for (let i = 0; i < 6000; i++) {
+        for (let i = 0; i < 8000; i++) {
             const r = 80 + Math.random() * 120;
-            const θ = Math.random() * Math.PI * 2;
-            const φ = Math.acos(2 * Math.random() - 1);
-            starVerts.push(r * Math.sin(φ) * Math.cos(θ), r * Math.sin(φ) * Math.sin(θ), r * Math.cos(φ));
+            const th = Math.random() * Math.PI * 2;
+            const ph = Math.acos(2 * Math.random() - 1);
+            starVerts.push(r * Math.sin(ph) * Math.cos(th), r * Math.sin(ph) * Math.sin(th), r * Math.cos(ph));
         }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
         const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.8 });
         scene.add(new THREE.Points(starGeo, starMat));
 
         // Lights
-        const ambientLight = new THREE.AmbientLight(0x334466, 0.6);
+        const ambientLight = new THREE.AmbientLight(0x445566, 0.7);
         scene.add(ambientLight);
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.4);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.6);
         sunLight.position.set(5, 3, 5);
         scene.add(sunLight);
-        const rimLight = new THREE.DirectionalLight(0x4488cc, 0.3);
+        const rimLight = new THREE.DirectionalLight(0x4488cc, 0.4);
         rimLight.position.set(-5, -2, -5);
         scene.add(rimLight);
 
-        // Earth Globe
+        // =============================================================
+        // EARTH GLOBE — NASA Blue Marble Satellite Texture
+        // =============================================================
         const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 128, 128);
+        const textureLoader = new THREE.TextureLoader();
 
-        // Procedural earth-like texture
-        const earthCanvas = document.createElement('canvas');
-        earthCanvas.width = 2048;
-        earthCanvas.height = 1024;
-        const ctx = earthCanvas.getContext('2d');
+        const earthTexture = textureLoader.load(
+            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'
+        );
+        const bumpTexture = textureLoader.load(
+            'https://unpkg.com/three-globe/example/img/earth-topology.png'
+        );
 
-        // Ocean gradient
-        const oceanGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-        oceanGrad.addColorStop(0, '#0a1628');
-        oceanGrad.addColorStop(0.3, '#0d2847');
-        oceanGrad.addColorStop(0.5, '#0f3060');
-        oceanGrad.addColorStop(0.7, '#0d2847');
-        oceanGrad.addColorStop(1, '#0a1628');
-        ctx.fillStyle = oceanGrad;
-        ctx.fillRect(0, 0, 2048, 1024);
-
-        // Simplified continent outlines (key land masses for this view)
-        function drawLandMass(points, color) {
-            ctx.beginPath();
-            const coords = points.map(([lat, lon]) => [
-                ((lon + 180) / 360) * 2048,
-                ((90 - lat) / 180) * 1024
-            ]);
-            ctx.moveTo(coords[0][0], coords[0][1]);
-            for (let i = 1; i < coords.length; i++) {
-                ctx.lineTo(coords[i][0], coords[i][1]);
-            }
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
-        }
-
-        // North America (simplified)
-        drawLandMass([
-            [70,-140],[70,-60],[60,-60],[50,-55],[45,-65],[43,-70],[40,-74],[35,-75],
-            [30,-80],[25,-80],[25,-97],[20,-105],[15,-90],[15,-85],[10,-84],[10,-78],
-            [8,-77],[30,-115],[35,-120],[40,-125],[48,-125],[55,-130],[60,-140],[65,-168],[70,-140]
-        ], '#0a3020');
-
-        // South America (simplified)
-        drawLandMass([
-            [12,-70],[10,-62],[5,-52],[0,-50],[-5,-35],[-10,-37],[-15,-40],[-20,-40],
-            [-25,-48],[-30,-50],[-35,-57],[-40,-62],[-45,-65],[-50,-70],[-55,-68],
-            [-55,-75],[-45,-75],[-40,-73],[-30,-72],[-15,-76],[-5,-80],[0,-78],[5,-77],[10,-72],[12,-70]
-        ], '#0a3020');
-
-        // Europe (simplified)
-        drawLandMass([
-            [70,30],[65,40],[60,30],[55,28],[50,5],[48,0],[45,-5],[43,-8],[36,-6],
-            [36,0],[38,5],[40,5],[42,10],[44,15],[44,20],[46,15],[48,17],[52,20],
-            [55,25],[60,30],[65,30],[70,30]
-        ], '#0a3020');
-
-        // Africa (simplified)
-        drawLandMass([
-            [35,-6],[37,10],[33,12],[30,32],[22,36],[15,42],[12,44],[0,42],[-5,40],
-            [-10,40],[-15,35],[-20,35],[-25,33],[-30,30],[-35,25],[-35,18],
-            [-25,15],[-15,12],[-5,10],[5,2],[5,-5],[10,-15],[15,-17],[20,-17],[25,-15],[30,-10],[35,-6]
-        ], '#0a3020');
-
-        // Asia (simplified)
-        drawLandMass([
-            [70,30],[70,180],[65,170],[55,160],[50,140],[40,130],[35,128],[30,120],
-            [22,114],[20,110],[10,108],[5,105],[0,105],[-5,105],[-8,115],
-            [0,100],[5,98],[10,100],[15,100],[20,92],[25,89],[28,88],[30,80],
-            [25,68],[24,60],[27,55],[30,48],[35,36],[40,28],[42,30],[45,40],
-            [50,40],[55,40],[60,50],[65,60],[70,70],[70,30]
-        ], '#0a3020');
-
-        // Add grid lines
-        ctx.strokeStyle = 'rgba(0, 170, 255, 0.06)';
-        ctx.lineWidth = 0.5;
-        for (let lat = -80; lat <= 80; lat += 20) {
-            const y = ((90 - lat) / 180) * 1024;
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2048, y); ctx.stroke();
-        }
-        for (let lon = -180; lon <= 180; lon += 20) {
-            const x = ((lon + 180) / 360) * 2048;
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1024); ctx.stroke();
-        }
-
-        // Country borders effect — add lighter edges
-        ctx.strokeStyle = 'rgba(0, 200, 255, 0.08)';
-        ctx.lineWidth = 1;
-
-        const earthTexture = new THREE.CanvasTexture(earthCanvas);
         const earthMat = new THREE.MeshPhongMaterial({
             map: earthTexture,
-            specular: new THREE.Color(0x222244),
-            shininess: 15,
-            transparent: false,
+            bumpMap: bumpTexture,
+            bumpScale: 0.03,
+            specular: new THREE.Color(0x333355),
+            shininess: 20,
         });
         const earth = new THREE.Mesh(earthGeo, earthMat);
         scene.add(earth);
@@ -1034,7 +1045,7 @@
                 varying vec3 vNormal;
                 void main() {
                     float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
-                    gl_FragColor = vec4(0.0, 0.5, 1.0, 1.0) * intensity * 1.5;
+                    gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity * 1.5;
                 }
             `,
             blending: THREE.AdditiveBlending,
@@ -1044,7 +1055,7 @@
         scene.add(new THREE.Mesh(atmosGeo, atmosMat));
 
         // Outer glow
-        const outerGlowGeo = new THREE.SphereGeometry(EARTH_RADIUS * 1.06, 64, 64);
+        const outerGlowGeo = new THREE.SphereGeometry(EARTH_RADIUS * 1.08, 64, 64);
         const outerGlowMat = new THREE.ShaderMaterial({
             vertexShader: `
                 varying vec3 vNormal;
@@ -1056,8 +1067,8 @@
             fragmentShader: `
                 varying vec3 vNormal;
                 void main() {
-                    float intensity = pow(0.55 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 4.0);
-                    gl_FragColor = vec4(0.0, 0.4, 0.9, 0.4) * intensity;
+                    float intensity = pow(0.5 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 4.0);
+                    gl_FragColor = vec4(0.1, 0.4, 0.9, 0.3) * intensity;
                 }
             `,
             blending: THREE.AdditiveBlending,
@@ -1077,48 +1088,33 @@
                 FLIGHT.from.lat, FLIGHT.from.lon,
                 FLIGHT.to.lat, FLIGHT.to.lon, t
             );
-            // Arc height above surface
             const arcH = Math.sin(t * Math.PI) * 0.25;
-            const v = latLonToVec3(pos.lat, pos.lon, EARTH_RADIUS + arcH);
-            pathPoints.push(v);
+            pathPoints.push(latLonToVec3(pos.lat, pos.lon, EARTH_RADIUS + arcH));
         }
         const pathGeo = new THREE.BufferGeometry().setFromPoints(pathPoints);
 
-        // Animated dashed line
         const pathMat = new THREE.LineDashedMaterial({
-            color: 0x00aaff,
-            dashSize: 0.08,
-            gapSize: 0.04,
-            linewidth: 1,
-            transparent: true,
-            opacity: 0.6,
+            color: 0x00aaff, dashSize: 0.08, gapSize: 0.04,
+            linewidth: 1, transparent: true, opacity: 0.6,
         });
         const pathLine = new THREE.Line(pathGeo, pathMat);
         pathLine.computeLineDistances();
         scene.add(pathLine);
 
-        // Solid glowing path
         const pathMat2 = new THREE.LineBasicMaterial({
-            color: 0x00ccff,
-            transparent: true,
-            opacity: 0.25,
-            linewidth: 1,
+            color: 0x00ccff, transparent: true, opacity: 0.25, linewidth: 1,
         });
-        const pathLine2 = new THREE.Line(pathGeo.clone(), pathMat2);
-        scene.add(pathLine2);
+        scene.add(new THREE.Line(pathGeo.clone(), pathMat2));
 
-        // Traveled path (updates each frame)
+        // Traveled path
         const traveledGeo = new THREE.BufferGeometry();
         const traveledMat = new THREE.LineBasicMaterial({
-            color: 0x00ffcc,
-            transparent: true,
-            opacity: 0.8,
-            linewidth: 2,
+            color: 0x00ffcc, transparent: true, opacity: 0.8, linewidth: 2,
         });
         const traveledLine = new THREE.Line(traveledGeo, traveledMat);
         scene.add(traveledLine);
 
-        // Airport markers (3D dots)
+        // Airport markers
         function createAirportDot(lat, lon, color) {
             const g = new THREE.SphereGeometry(0.04, 16, 16);
             const m = new THREE.MeshBasicMaterial({ color });
@@ -1126,101 +1122,219 @@
             const pos = latLonToVec3(lat, lon, EARTH_RADIUS + 0.01);
             mesh.position.copy(pos);
             scene.add(mesh);
-
-            // Glow ring
             const ringG = new THREE.RingGeometry(0.05, 0.09, 32);
-            const ringM = new THREE.MeshBasicMaterial({
-                color, transparent: true, opacity: 0.5, side: THREE.DoubleSide
-            });
+            const ringM = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
             const ring = new THREE.Mesh(ringG, ringM);
             ring.position.copy(pos);
             ring.lookAt(0, 0, 0);
             scene.add(ring);
-
             return { mesh, ring };
         }
-
         createAirportDot(FLIGHT.from.lat, FLIGHT.from.lon, 0x00ffcc);
         createAirportDot(FLIGHT.to.lat, FLIGHT.to.lon, 0x00ffcc);
 
         // =============================================================
-        // 3D AIRPLANE MODEL (built from primitives)
+        // 3D AIRPLANE MODEL — Realistic shape
         // =============================================================
         const planeGroup = new THREE.Group();
 
-        // Fuselage
-        const fuselageGeo = new THREE.CylinderGeometry(0.03, 0.025, 0.3, 8);
-        const fuselageMat = new THREE.MeshPhongMaterial({ color: 0xeeeeff, emissive: 0x112244, shininess: 80 });
-        const fuselage = new THREE.Mesh(fuselageGeo, fuselageMat);
+        // Materials
+        const bodyMat = new THREE.MeshPhongMaterial({
+            color: 0xf0f0f5, emissive: 0x111122, shininess: 90, specular: new THREE.Color(0x666666)
+        });
+        const wingMat = new THREE.MeshPhongMaterial({
+            color: 0xe8e8f0, emissive: 0x111122, shininess: 60, side: THREE.DoubleSide
+        });
+        const tailBlueMat = new THREE.MeshPhongMaterial({
+            color: 0x0050a0, emissive: 0x001133, shininess: 80
+        });
+        const engineMat = new THREE.MeshPhongMaterial({
+            color: 0x777788, emissive: 0x111122, shininess: 40
+        });
+        const cockpitMat = new THREE.MeshPhongMaterial({
+            color: 0x112244, emissive: 0x0a1a2a, shininess: 100, specular: new THREE.Color(0x6688aa)
+        });
+
+        // --- FUSELAGE (smooth cylinder + nose cone + tail taper) ---
+        // Main body - high segment count for smoothness
+        const fuselageGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.22, 32, 1, true);
+        const fuselage = new THREE.Mesh(fuselageGeo, bodyMat);
         fuselage.rotation.z = Math.PI / 2;
         planeGroup.add(fuselage);
 
-        // Wings
-        const wingGeo = new THREE.BoxGeometry(0.25, 0.005, 0.06);
-        const wingMat = new THREE.MeshPhongMaterial({ color: 0xccccdd, emissive: 0x112233 });
-        const wings = new THREE.Mesh(wingGeo, wingMat);
-        wings.position.set(0.02, 0, 0);
-        planeGroup.add(wings);
+        // Nose cone (smooth hemisphere + taper)
+        const noseGeo = new THREE.SphereGeometry(0.03, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+        const nose = new THREE.Mesh(noseGeo, bodyMat);
+        nose.rotation.z = -Math.PI / 2;
+        nose.position.set(0.11, 0, 0);
+        planeGroup.add(nose);
 
-        // Tail
-        const tailGeo = new THREE.BoxGeometry(0.08, 0.005, 0.05);
-        const tail = new THREE.Mesh(tailGeo, wingMat);
-        tail.position.set(-0.005, 0, -0.12);
-        planeGroup.add(tail);
+        // Nose tip extension (tapered point)
+        const noseTipGeo = new THREE.ConeGeometry(0.03, 0.05, 32);
+        const noseTip = new THREE.Mesh(noseTipGeo, bodyMat);
+        noseTip.rotation.z = -Math.PI / 2;
+        noseTip.position.set(0.135, 0, 0);
+        planeGroup.add(noseTip);
 
-        // Vertical stabilizer
-        const finGeo = new THREE.BoxGeometry(0.005, 0.06, 0.05);
-        const fin = new THREE.Mesh(finGeo, new THREE.MeshPhongMaterial({ color: 0x0050a0, emissive: 0x001133 }));
-        fin.position.set(0, 0.03, -0.12);
-        planeGroup.add(fin);
+        // Cockpit windshield (dark area at nose)
+        const cockpitGeo = new THREE.SphereGeometry(0.031, 32, 16, 0, Math.PI * 2, 0, Math.PI / 3);
+        const cockpit = new THREE.Mesh(cockpitGeo, cockpitMat);
+        cockpit.rotation.z = -Math.PI / 2;
+        cockpit.position.set(0.11, 0.003, 0);
+        cockpit.scale.set(0.6, 0.6, 0.8);
+        planeGroup.add(cockpit);
 
-        // Engines
-        const engGeo = new THREE.CylinderGeometry(0.012, 0.015, 0.06, 8);
-        const engMat = new THREE.MeshPhongMaterial({ color: 0x888899, emissive: 0x111122 });
-        [0.07, -0.07].forEach(x => {
-            const eng = new THREE.Mesh(engGeo, engMat);
+        // Tail cone (taper to point)
+        const tailConeGeo = new THREE.ConeGeometry(0.03, 0.08, 32);
+        const tailCone = new THREE.Mesh(tailConeGeo, bodyMat);
+        tailCone.rotation.z = Math.PI / 2;
+        tailCone.position.set(-0.15, 0, 0);
+        planeGroup.add(tailCone);
+
+        // --- SWEPT WINGS (Shape geometry for realistic planform) ---
+        // Right wing
+        const rwShape = new THREE.Shape();
+        rwShape.moveTo(0.025, 0.015);      // root leading edge
+        rwShape.lineTo(-0.005, 0.15);      // tip leading edge (swept back)
+        rwShape.lineTo(-0.015, 0.145);     // tip trailing edge
+        rwShape.lineTo(-0.04, 0.015);      // root trailing edge
+        rwShape.closePath();
+        const rwGeo = new THREE.ShapeGeometry(rwShape);
+        const rightWing = new THREE.Mesh(rwGeo, wingMat);
+        rightWing.rotation.x = Math.PI / 2;
+        planeGroup.add(rightWing);
+
+        // Left wing (mirror)
+        const lwShape = new THREE.Shape();
+        lwShape.moveTo(0.025, -0.015);
+        lwShape.lineTo(-0.005, -0.15);
+        lwShape.lineTo(-0.015, -0.145);
+        lwShape.lineTo(-0.04, -0.015);
+        lwShape.closePath();
+        const lwGeo = new THREE.ShapeGeometry(lwShape);
+        const leftWing = new THREE.Mesh(lwGeo, wingMat);
+        leftWing.rotation.x = Math.PI / 2;
+        planeGroup.add(leftWing);
+
+        // --- HORIZONTAL STABILIZER (small swept wings at tail) ---
+        const rhsShape = new THREE.Shape();
+        rhsShape.moveTo(-0.12, 0.01);
+        rhsShape.lineTo(-0.145, 0.055);
+        rhsShape.lineTo(-0.155, 0.05);
+        rhsShape.lineTo(-0.14, 0.01);
+        rhsShape.closePath();
+        const rhsGeo = new THREE.ShapeGeometry(rhsShape);
+        const rightHStab = new THREE.Mesh(rhsGeo, wingMat);
+        rightHStab.rotation.x = Math.PI / 2;
+        planeGroup.add(rightHStab);
+
+        const lhsShape = new THREE.Shape();
+        lhsShape.moveTo(-0.12, -0.01);
+        lhsShape.lineTo(-0.145, -0.055);
+        lhsShape.lineTo(-0.155, -0.05);
+        lhsShape.lineTo(-0.14, -0.01);
+        lhsShape.closePath();
+        const lhsGeo = new THREE.ShapeGeometry(lhsShape);
+        const leftHStab = new THREE.Mesh(lhsGeo, wingMat);
+        leftHStab.rotation.x = Math.PI / 2;
+        planeGroup.add(leftHStab);
+
+        // --- VERTICAL STABILIZER (tail fin — United blue) ---
+        const vStabShape = new THREE.Shape();
+        vStabShape.moveTo(-0.10, 0.0);
+        vStabShape.lineTo(-0.13, 0.07);
+        vStabShape.lineTo(-0.17, 0.065);
+        vStabShape.lineTo(-0.16, 0.0);
+        vStabShape.closePath();
+        const vStabGeo = new THREE.ShapeGeometry(vStabShape);
+        const vStab = new THREE.Mesh(vStabGeo, new THREE.MeshPhongMaterial({
+            color: 0x0050a0, emissive: 0x001133, shininess: 80, side: THREE.DoubleSide
+        }));
+        planeGroup.add(vStab);
+
+        // --- ENGINES (two nacelles under wings) ---
+        [-0.065, 0.065].forEach(zPos => {
+            // Engine nacelle
+            const engGeo = new THREE.CylinderGeometry(0.014, 0.016, 0.05, 24);
+            const eng = new THREE.Mesh(engGeo, engineMat);
             eng.rotation.z = Math.PI / 2;
-            eng.position.set(x, -0.015, 0.03);
+            eng.position.set(0.01, -0.018, zPos);
             planeGroup.add(eng);
+
+            // Engine intake ring
+            const intakeGeo = new THREE.TorusGeometry(0.015, 0.002, 8, 24);
+            const intake = new THREE.Mesh(intakeGeo, new THREE.MeshPhongMaterial({
+                color: 0x999999, emissive: 0x222222
+            }));
+            intake.rotation.y = Math.PI / 2;
+            intake.position.set(0.036, -0.018, zPos);
+            planeGroup.add(intake);
+
+            // Engine exhaust glow
+            const exGlowGeo = new THREE.CircleGeometry(0.012, 16);
+            const exGlow = new THREE.Mesh(exGlowGeo, new THREE.MeshBasicMaterial({
+                color: 0x4488ff, transparent: true, opacity: 0.3
+            }));
+            exGlow.rotation.y = Math.PI / 2;
+            exGlow.position.set(-0.016, -0.018, zPos);
+            planeGroup.add(exGlow);
         });
+
+        // Window line (series of small dots along fuselage)
+        const windowMat = new THREE.MeshBasicMaterial({ color: 0x88bbff });
+        for (let i = -8; i <= 8; i++) {
+            const wx = i * 0.012;
+            const wGeo = new THREE.CircleGeometry(0.003, 8);
+            const wTop = new THREE.Mesh(wGeo, windowMat);
+            wTop.position.set(wx, 0.025, 0.015);
+            wTop.rotation.y = 0;
+            planeGroup.add(wTop);
+            const wBot = new THREE.Mesh(wGeo.clone(), windowMat);
+            wBot.position.set(wx, 0.025, -0.015);
+            wBot.rotation.y = Math.PI;
+            planeGroup.add(wBot);
+        }
 
         // Glow effect for plane
         const planeGlow = new THREE.PointLight(0x00aaff, 1, 0.8);
-        planeGlow.position.set(0, 0, 0);
         planeGroup.add(planeGlow);
+
+        // Navigation lights
+        const navLightR = new THREE.PointLight(0x00ff00, 0.5, 0.3);
+        navLightR.position.set(-0.005, 0, 0.15);
+        planeGroup.add(navLightR);
+        const navLightL = new THREE.PointLight(0xff0000, 0.5, 0.3);
+        navLightL.position.set(-0.005, 0, -0.15);
+        planeGroup.add(navLightL);
+        const tailLight = new THREE.PointLight(0xffffff, 0.3, 0.3);
+        tailLight.position.set(-0.17, 0.065, 0);
+        planeGroup.add(tailLight);
 
         // Contrail particles
         const contrailGeo = new THREE.BufferGeometry();
         const contrailPositions = new Float32Array(300 * 3);
         contrailGeo.setAttribute('position', new THREE.BufferAttribute(contrailPositions, 3));
         const contrailMat = new THREE.PointsMaterial({
-            color: 0xaaddff,
-            size: 0.015,
-            transparent: true,
-            opacity: 0.4,
-            blending: THREE.AdditiveBlending,
+            color: 0xaaddff, size: 0.015, transparent: true,
+            opacity: 0.4, blending: THREE.AdditiveBlending,
         });
         const contrail = new THREE.Points(contrailGeo, contrailMat);
         scene.add(contrail);
         const contrailTrail = [];
 
-        planeGroup.scale.set(1.2, 1.2, 1.2);
+        planeGroup.scale.set(1.3, 1.3, 1.3);
         scene.add(planeGroup);
 
         // =============================================================
-        // FAMILY MARKERS ON PLANE (small colored spheres)
+        // FAMILY MARKERS ON PLANE
         // =============================================================
         const familyGroup = new THREE.Group();
 
         function createFamilyMarker(color, emissive, yOff, xOff) {
             const g = new THREE.SphereGeometry(0.025, 16, 16);
-            const m = new THREE.MeshPhongMaterial({
-                color, emissive, transparent: true, opacity: 0.9
-            });
+            const m = new THREE.MeshPhongMaterial({ color, emissive, transparent: true, opacity: 0.9 });
             const mesh = new THREE.Mesh(g, m);
             mesh.position.set(xOff, yOff, 0);
-
-            // Glow
             const glowLight = new THREE.PointLight(color, 0.3, 0.3);
             glowLight.position.copy(mesh.position);
             familyGroup.add(glowLight);
@@ -1228,21 +1342,21 @@
             return mesh;
         }
 
-        const wifeMarker = createFamilyMarker(0xff6b9d, 0x991144, 0.07, -0.04);
-        const child1Marker = createFamilyMarker(0x00e676, 0x005522, 0.07, 0.0);
-        const child2Marker = createFamilyMarker(0xffab40, 0x663300, 0.07, 0.04);
-
+        createFamilyMarker(0xff6b9d, 0x991144, 0.07, -0.04);
+        createFamilyMarker(0x00e676, 0x005522, 0.07, 0.0);
+        createFamilyMarker(0xffab40, 0x663300, 0.07, 0.04);
         scene.add(familyGroup);
 
         // =============================================================
-        // ORBIT CONTROLS (simple mouse/touch)
+        // ORBIT CONTROLS
         // =============================================================
         let isDragging = false;
         let prevMouse = { x: 0, y: 0 };
-        let rotationTarget = { x: 0.15, y: -1.6 }; // start looking at North America
-        let rotation = { x: 0.15, y: -1.6 };
-        let cameraDistance = 12;
-        let targetDistance = 12;
+        // Camera aimed at mid-US to center on flight path
+        let rotationTarget = { x: 0.55, y: 0.07 };
+        let rotation = { x: 0.55, y: 0.07 };
+        let cameraDistance = 11;
+        let targetDistance = 11;
 
         renderer.domElement.addEventListener('mousedown', (e) => {
             isDragging = true;
@@ -1324,9 +1438,9 @@
             planeLabel: document.getElementById('planeLabel'),
             markerAUS: document.getElementById('markerAUS'),
             markerEWR: document.getElementById('markerEWR'),
-            wifeStatus: document.getElementById('wifeStatus'),
-            child1Status: document.getElementById('child1Status'),
-            child2Status: document.getElementById('child2Status'),
+            dianaStatus: document.getElementById('dianaStatus'),
+            lucaStatus: document.getElementById('lucaStatus'),
+            ellieStatus: document.getElementById('ellieStatus'),
         };
 
         // =============================================================
@@ -1369,14 +1483,15 @@
 
         // Passenger activity rotation
         const activities = {
-            wife: ['💕', '😴', '📱', '☕', '🎵', '📷'],
-            child1: ['🎮', '😴', '📱', '🍿', '✏️', '🤩'],
-            child2: ['📖', '😴', '🎨', '🍫', '🧸', '😊'],
+            diana: ['💕', '😴', '📱', '☕', '🎵', '📷'],
+            luca: ['🎮', '😴', '📱', '🍿', '✏️', '🤩'],
+            ellie: ['📖', '😴', '🎨', '🍫', '🧸', '😊'],
         };
 
-        function getActivity(who, t) {
+        function getActivity(who) {
             const arr = activities[who];
-            const idx = Math.floor((Date.now() / 30000) + (who === 'wife' ? 0 : who === 'child1' ? 1 : 2)) % arr.length;
+            const offset = who === 'diana' ? 0 : who === 'luca' ? 1 : 2;
+            const idx = Math.floor((Date.now() / 30000) + offset) % arr.length;
             return arr[idx];
         }
 
@@ -1388,15 +1503,14 @@
             const phase = getFlightPhase();
             let t = getFlightProgress();
 
-            // For demo: if flight hasn't started or has ended, simulate mid-flight
+            // Demo mode: simulate mid-flight if not currently in-flight
             let simulated = false;
             if (phase === 'scheduled' || phase === 'landed') {
-                // Show a demo position cycling through the route
                 t = (Math.sin(Date.now() * 0.0001) * 0.5 + 0.5) * 0.85 + 0.05;
                 simulated = true;
             }
 
-            // Current position on great circle
+            // Current position
             const pos = greatCirclePoint(
                 FLIGHT.from.lat, FLIGHT.from.lon,
                 FLIGHT.to.lat, FLIGHT.to.lon, t
@@ -1407,13 +1521,13 @@
             const distLeft = FLIGHT.totalDistMi * (1 - t);
             const distDone = FLIGHT.totalDistMi * t;
 
-            // Update plane position in 3D
+            // Update plane position
             const arcH = Math.sin(t * Math.PI) * 0.25;
             const planePos = latLonToVec3(pos.lat, pos.lon, EARTH_RADIUS + arcH + 0.02);
             planeGroup.position.copy(planePos);
             familyGroup.position.copy(planePos);
 
-            // Orient plane along path
+            // Orient plane
             const tNext = Math.min(1, t + 0.01);
             const nextPos = greatCirclePoint(
                 FLIGHT.from.lat, FLIGHT.from.lon,
@@ -1422,9 +1536,7 @@
             const nextArcH = Math.sin(tNext * Math.PI) * 0.25;
             const nextPlanePos = latLonToVec3(nextPos.lat, nextPos.lon, EARTH_RADIUS + nextArcH + 0.02);
             const direction = nextPlanePos.clone().sub(planePos).normalize();
-            const up = planePos.clone().normalize();
 
-            // Align plane to face direction of travel
             const lookTarget = planePos.clone().add(direction);
             planeGroup.lookAt(lookTarget);
             planeGroup.rotateY(Math.PI / 2);
@@ -1461,14 +1573,14 @@
             traveledLine.geometry.dispose();
             traveledLine.geometry = new THREE.BufferGeometry().setFromPoints(traveledPts);
 
-            // Smooth camera rotation
+            // Smooth camera
             rotation.x += (rotationTarget.x - rotation.x) * 0.05;
             rotation.y += (rotationTarget.y - rotation.y) * 0.05;
             cameraDistance += (targetDistance - cameraDistance) * 0.05;
 
-            // Slow auto-rotate when not dragging
+            // Very slow auto-rotate
             if (!isDragging) {
-                rotationTarget.y -= 0.0003;
+                rotationTarget.y -= 0.0001;
             }
 
             camera.position.x = cameraDistance * Math.cos(rotation.x) * Math.sin(rotation.y);
@@ -1476,8 +1588,14 @@
             camera.position.z = cameraDistance * Math.cos(rotation.x) * Math.cos(rotation.y);
             camera.lookAt(0, 0, 0);
 
-            // Pulse plane glow
+            // Pulse effects
             planeGlow.intensity = 0.8 + Math.sin(Date.now() * 0.005) * 0.3;
+
+            // Blink nav lights
+            const blinkPhase = Math.sin(Date.now() * 0.003);
+            navLightR.intensity = blinkPhase > 0 ? 0.8 : 0.1;
+            navLightL.intensity = blinkPhase > 0 ? 0.8 : 0.1;
+            tailLight.intensity = blinkPhase > 0.5 ? 0.6 : 0.1;
 
             // Project 3D labels to 2D
             const planeSP = project3Dto2D(planePos);
@@ -1505,10 +1623,8 @@
 
             // Update UI every 15 frames
             if (frameCount % 15 === 0) {
-                // Clock
                 ui.clock.textContent = now.toUTCString().slice(17, 25) + ' UTC';
 
-                // Status
                 if (phase === 'scheduled') {
                     ui.statusPill.className = 'status-pill scheduled';
                     ui.statusIcon.textContent = '⏳';
@@ -1522,17 +1638,15 @@
                 } else {
                     ui.statusPill.className = 'status-pill landed';
                     ui.statusIcon.textContent = '✅';
-                    ui.statusText.textContent = simulated ? 'DEMO MODE' : 'LANDED';
-                    ui.liveStatus.textContent = simulated ? 'DEMO' : 'ARRIVED';
+                    ui.statusText.textContent = simulated ? 'ARRIVED · REPLAY' : 'LANDED';
+                    ui.liveStatus.textContent = simulated ? 'REPLAY' : 'ARRIVED';
                 }
 
-                // Progress
                 const pct = Math.round(t * 100);
                 ui.progressPct.textContent = pct + '%';
                 ui.progressFill.style.width = pct + '%';
                 ui.routePlane.style.left = pct + '%';
 
-                // ETA
                 const remainMs = FLIGHT.arrivalUTC.getTime() - now.getTime();
                 if (phase === 'in-flight') {
                     ui.etaValue.textContent = formatTime(Math.max(0, remainMs));
@@ -1543,29 +1657,24 @@
                     ui.etaValue.textContent = 'Arrived!';
                 }
 
-                // Data
                 ui.altitude.innerHTML = Math.round(alt).toLocaleString() + '<span class="data-unit"> ft</span>';
                 ui.speed.innerHTML = Math.round(spd).toLocaleString() + '<span class="data-unit"> mph</span>';
                 ui.heading.innerHTML = Math.round(hdg) + '<span class="data-unit">°</span>';
                 ui.distLeft.innerHTML = Math.round(distLeft).toLocaleString() + '<span class="data-unit"> mi</span>';
 
-                // Position
                 ui.lat.textContent = pos.lat.toFixed(4) + '° ' + (pos.lat >= 0 ? 'N' : 'S');
                 ui.lon.textContent = Math.abs(pos.lon).toFixed(4) + '° ' + (pos.lon >= 0 ? 'E' : 'W');
                 ui.distTraveled.textContent = Math.round(distDone).toLocaleString() + ' mi';
 
-                // Label
                 ui.labelAlt.textContent = Math.round(alt).toLocaleString() + ' ft · ' + Math.round(spd) + ' mph';
 
-                // Bottom bar
                 ui.bottomAlt.textContent = Math.round(alt).toLocaleString() + ' ft';
                 ui.bottomSpd.textContent = Math.round(spd) + ' mph';
                 ui.bottomEta.textContent = phase === 'in-flight' ? formatTime(Math.max(0, remainMs)) : (phase === 'landed' ? 'Arrived' : '--');
 
-                // Passenger activities
-                ui.wifeStatus.textContent = getActivity('wife', t);
-                ui.child1Status.textContent = getActivity('child1', t);
-                ui.child2Status.textContent = getActivity('child2', t);
+                ui.dianaStatus.textContent = getActivity('diana');
+                ui.lucaStatus.textContent = getActivity('luca');
+                ui.ellieStatus.textContent = getActivity('ellie');
             }
 
             renderer.render(scene, camera);
@@ -1580,11 +1689,6 @@
             camera.aspect = w / h;
             camera.updateProjectionMatrix();
         });
-
-        // Initial camera position: look at USA
-        rotationTarget.y = -1.4;
-        rotationTarget.x = 0.3;
-        targetDistance = 11;
 
     })();
     </script>
