@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printful Inventory Dashboard — White T-Shirts</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2235;
+            --bg-card-hover: #1f2a40;
+            --border: #2a3550;
+            --text-primary: #f0f4ff;
+            --text-secondary: #94a3c0;
+            --text-muted: #5a6a8a;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --glow-blue: rgba(59, 130, 246, 0.15);
+            --glow-green: rgba(16, 185, 129, 0.15);
+            --glow-red: rgba(239, 68, 68, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background grid effect */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app { position: relative; z-index: 1; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 16px; }
+
+        .logo {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; color: #fff;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .header-title h1 {
+            font-size: 20px; font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .header-title span {
+            font-size: 12px; color: var(--text-muted);
+            font-weight: 400; letter-spacing: 0.5px;
+        }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .status-badge {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 500;
+            background: var(--glow-green);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-badge.disconnected {
+            background: var(--glow-red);
+            color: var(--accent-red);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .status-badge.loading {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .pulse-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: currentColor; position: relative;
+        }
+
+        .pulse-dot::after {
+            content: ''; position: absolute; inset: -3px;
+            border-radius: 50%; border: 2px solid currentColor;
+            animation: pulse 2s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .refresh-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent-blue); }
+        .refresh-btn.spinning svg { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Setup Panel */
+        .setup-panel {
+            max-width: 520px; margin: 80px auto; padding: 40px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .setup-panel h2 { font-size: 22px; margin-bottom: 8px; }
+        .setup-panel p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-secondary); }
+
+        .input-group input {
+            width: 100%; padding: 12px 14px;
+            background: var(--bg-primary); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--glow-blue); }
+        .input-group input::placeholder { color: var(--text-muted); }
+
+        .connect-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border: none; border-radius: 10px;
+            color: #fff; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .connect-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 30px rgba(59, 130, 246, 0.4); }
+        .connect-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .demo-link {
+            display: block; text-align: center; margin-top: 16px;
+            color: var(--accent-blue); font-size: 13px; cursor: pointer;
+            text-decoration: underline; background: none; border: none;
+            font-family: inherit;
+        }
+
+        .error-msg { color: var(--accent-red); font-size: 13px; margin-top: 8px; display: none; }
+
+        /* Main Content */
+        .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+
+        /* Summary Cards */
+        .summary-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .summary-card:hover { border-color: var(--accent-blue); background: var(--bg-card-hover); }
+
+        .summary-card .label {
+            font-size: 12px; font-weight: 500; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 32px; font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .summary-card .sub {
+            font-size: 12px; color: var(--text-secondary); margin-top: 4px;
+        }
+
+        .value-green { color: var(--accent-green); }
+        .value-blue { color: var(--accent-blue); }
+        .value-yellow { color: var(--accent-yellow); }
+        .value-red { color: var(--accent-red); }
+
+        /* Product Grid */
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 { font-size: 18px; font-weight: 700; }
+        .section-header .timestamp { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .product-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+
+        .product-header {
+            padding: 20px; display: flex; align-items: center; gap: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .product-thumb {
+            width: 64px; height: 64px; border-radius: 10px;
+            background: var(--bg-secondary); overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; border: 1px solid var(--border);
+        }
+
+        .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .product-thumb .placeholder {
+            font-size: 28px; opacity: 0.5;
+        }
+
+        .product-info { flex: 1; min-width: 0; }
+        .product-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-info .product-id { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        .stock-badge {
+            padding: 4px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .stock-in { background: var(--glow-green); color: var(--accent-green); }
+        .stock-low { background: rgba(245, 158, 11, 0.1); color: var(--accent-yellow); }
+        .stock-out { background: var(--glow-red); color: var(--accent-red); }
+
+        /* Variant Table */
+        .variant-table { width: 100%; }
+
+        .variant-table .table-header {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 10px 20px; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; background: rgba(0,0,0,0.2);
+        }
+
+        .variant-row {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 10px 20px; font-size: 13px;
+            border-top: 1px solid rgba(42, 53, 80, 0.5);
+            transition: background 0.15s;
+        }
+
+        .variant-row:hover { background: rgba(59, 130, 246, 0.05); }
+
+        .variant-row .size { font-weight: 500; }
+        .variant-row .sku { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+        .variant-row .stock-num { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .stock-num.high { color: var(--accent-green); }
+        .stock-num.medium { color: var(--accent-yellow); }
+        .stock-num.low { color: var(--accent-red); }
+
+        .availability-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+            margin-right: 6px; vertical-align: middle;
+        }
+
+        .availability-dot.available { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+        .availability-dot.limited { background: var(--accent-yellow); box-shadow: 0 0 6px var(--accent-yellow); }
+        .availability-dot.unavailable { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
+
+        /* Scrollable variant list */
+        .variant-list { max-height: 240px; overflow-y: auto; }
+        .variant-list::-webkit-scrollbar { width: 4px; }
+        .variant-list::-webkit-scrollbar-track { background: transparent; }
+        .variant-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        .skeleton-card { height: 320px; border-radius: 14px; }
+
+        /* Availability Matrix */
+        .matrix-section { margin-bottom: 32px; }
+
+        .matrix-table {
+            width: 100%; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .matrix-table table { width: 100%; border-collapse: collapse; }
+        .matrix-table th, .matrix-table td { padding: 10px 14px; text-align: center; font-size: 13px; }
+        .matrix-table th { background: rgba(0,0,0,0.2); color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .matrix-table td { border-top: 1px solid rgba(42,53,80,0.4); }
+        .matrix-table td:first-child { text-align: left; font-weight: 500; }
+
+        .matrix-cell {
+            width: 28px; height: 28px; border-radius: 6px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+        }
+
+        .matrix-cell.high { background: var(--glow-green); color: var(--accent-green); }
+        .matrix-cell.medium { background: rgba(245,158,11,0.1); color: var(--accent-yellow); }
+        .matrix-cell.low { background: var(--glow-red); color: var(--accent-red); }
+        .matrix-cell.none { background: rgba(90,106,138,0.1); color: var(--text-muted); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .summary-row { grid-template-columns: repeat(2, 1fr); }
+            .product-grid { grid-template-columns: 1fr; }
+            .main { padding: 16px; }
+            .header { padding: 16px; }
+        }
+
+        @media (max-width: 600px) {
+            .summary-row { grid-template-columns: 1fr; }
+        }
+
+        /* Fade in animation */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">P</div>
+            <div class="header-title">
+                <h1>Printful Inventory</h1>
+                <span>White T-Shirt Collection — Real-time Stock Monitor</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div id="statusBadge" class="status-badge disconnected">
+                <div class="pulse-dot"></div>
+                <span id="statusText">Disconnected</span>
+            </div>
+            <button id="refreshBtn" class="refresh-btn hidden" onclick="refreshInventory()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Setup Panel -->
+    <div id="setupPanel" class="setup-panel">
+        <h2>Connect to Printful</h2>
+        <p>Enter your Printful API key to fetch real-time inventory data for your white t-shirt products. You can find your API key in <strong>Printful Dashboard &rarr; Settings &rarr; API</strong>.</p>
+        <div class="input-group">
+            <label>API Key</label>
+            <input type="password" id="apiKeyInput" placeholder="paste your Printful API token here" autocomplete="off">
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <button id="connectBtn" class="connect-btn" onclick="connectAPI()">Connect &amp; Load Inventory</button>
+        <button class="demo-link" onclick="loadDemoData()">or try with demo data</button>
+    </div>
+
+    <!-- Dashboard (hidden until connected) -->
+    <div id="dashboard" class="main hidden">
+
+        <!-- Summary Cards -->
+        <div class="summary-row" id="summaryRow">
+            <div class="summary-card">
+                <div class="label">Total Products</div>
+                <div class="value value-blue" id="totalProducts">—</div>
+                <div class="sub">White T-Shirt SKUs</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total Variants</div>
+                <div class="value value-blue" id="totalVariants">—</div>
+                <div class="sub">Size / color combos</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">In Stock</div>
+                <div class="value value-green" id="inStockCount">—</div>
+                <div class="sub">Variants available</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Out of Stock</div>
+                <div class="value value-red" id="outOfStockCount">—</div>
+                <div class="sub">Variants unavailable</div>
+            </div>
+        </div>
+
+        <!-- Size Availability Matrix -->
+        <div class="matrix-section">
+            <div class="section-header">
+                <h2>Size Availability Matrix</h2>
+            </div>
+            <div class="matrix-table" id="matrixTable"></div>
+        </div>
+
+        <!-- Product Cards -->
+        <div class="section-header">
+            <h2>Product Details</h2>
+            <span class="timestamp" id="lastUpdated"></span>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+</div>
+
+<script>
+    // =========================================================
+    //  Printful Inventory Dashboard — Core Logic
+    // =========================================================
+
+    const PRINTFUL_API = 'https://api.printful.com';
+    let API_KEY = '';
+    let inventoryData = [];
+    let autoRefreshTimer = null;
+
+    // 5 popular blank white t-shirt catalog IDs (Printful product catalog)
+    // These are Printful catalog product IDs for well-known blank white tees
+    const TARGET_CATALOG_PRODUCTS = [
+        { catalogId: 586, name: 'Bella+Canvas 3001 Unisex Jersey Tee' },
+        { catalogId: 71,  name: 'Gildan 5000 Heavy Cotton Tee' },
+        { catalogId: 380, name: 'Gildan 64000 Softstyle Tee' },
+        { catalogId: 389, name: 'Next Level 3600 Premium Cotton Tee' },
+        { catalogId: 473, name: 'Comfort Colors 1717 Garment-Dyed Tee' }
+    ];
+
+    // ---- API Helpers ----
+
+    async function printfulGet(path) {
+        const res = await fetch(`${PRINTFUL_API}${path}`, {
+            headers: { 'Authorization': `Bearer ${API_KEY}` }
+        });
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body?.result || body?.error?.message || `HTTP ${res.status}`);
+        }
+        return res.json();
+    }
+
+    // ---- Connect ----
+
+    async function connectAPI() {
+        const key = document.getElementById('apiKeyInput').value.trim();
+        if (!key) { showError('Please enter an API key.'); return; }
+
+        API_KEY = key;
+        const btn = document.getElementById('connectBtn');
+        btn.disabled = true;
+        btn.textContent = 'Connecting...';
+        setStatus('loading', 'Connecting...');
+        hideError();
+
+        try {
+            // Validate key by fetching store info
+            await printfulGet('/store');
+            localStorage.setItem('printful_api_key', key);
+            showDashboard();
+            await refreshInventory();
+            startAutoRefresh();
+        } catch (e) {
+            showError(`Connection failed: ${e.message}`);
+            setStatus('disconnected', 'Disconnected');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Connect & Load Inventory';
+        }
+    }
+
+    // ---- Fetch Inventory ----
+
+    async function refreshInventory() {
+        const btn = document.getElementById('refreshBtn');
+        btn.classList.add('spinning');
+        setStatus('loading', 'Fetching...');
+
+        try {
+            // Get store products
+            const storeRes = await printfulGet('/store/products?limit=100');
+            const storeProducts = storeRes.result || [];
+
+            // Try to find white tee products in the store
+            // Also fetch catalog data for our target products
+            const products = [];
+
+            // Strategy 1: Use store products if any exist
+            if (storeProducts.length > 0) {
+                // Fetch details for up to 5 store products
+                const toFetch = storeProducts.slice(0, 5);
+                const details = await Promise.all(
+                    toFetch.map(p => printfulGet(`/store/products/${p.id}`).catch(() => null))
+                );
+
+                for (const d of details) {
+                    if (!d?.result) continue;
+                    const prod = d.result;
+                    products.push(normalizeStoreProduct(prod));
+                }
+            }
+
+            // Strategy 2: If no store products, fetch catalog product info
+            if (products.length === 0) {
+                const catalogDetails = await Promise.all(
+                    TARGET_CATALOG_PRODUCTS.map(p =>
+                        printfulGet(`/products/${p.catalogId}`).catch(() => null)
+                    )
+                );
+
+                for (let i = 0; i < catalogDetails.length; i++) {
+                    if (!catalogDetails[i]?.result) continue;
+                    const cat = catalogDetails[i].result;
+                    // Get variant details (filter to white / size info)
+                    const varRes = await printfulGet(`/products/${cat.product.id}`).catch(() => null);
+                    if (varRes?.result) {
+                        products.push(normalizeCatalogProduct(varRes.result, TARGET_CATALOG_PRODUCTS[i]));
+                    }
+                }
+            }
+
+            inventoryData = products;
+            renderDashboard(products);
+            setStatus('connected', 'Live');
+        } catch (e) {
+            console.error(e);
+            setStatus('disconnected', `Error: ${e.message}`);
+        } finally {
+            btn.classList.remove('spinning');
+            document.getElementById('lastUpdated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+        }
+    }
+
+    function normalizeStoreProduct(prod) {
+        const syncProduct = prod.sync_product || {};
+        const variants = (prod.sync_variants || []).map(v => ({
+            id: v.id,
+            name: v.name,
+            sku: v.sku || v.external_id || '—',
+            size: extractSize(v.name),
+            color: extractColor(v.name),
+            inStock: v.availability_status !== 'unavailable',
+            availability: v.availability_status || 'unknown',
+            retailPrice: v.retail_price,
+            currency: v.currency
+        }));
+
+        return {
+            id: syncProduct.id,
+            name: syncProduct.name || 'Unnamed Product',
+            thumbnail: syncProduct.thumbnail_url,
+            variants,
+            type: 'store'
+        };
+    }
+
+    function normalizeCatalogProduct(catData, target) {
+        const product = catData.product || {};
+        const allVariants = catData.variants || [];
+
+        // Filter to white variants
+        const whiteVariants = allVariants.filter(v => {
+            const c = (v.color || '').toLowerCase();
+            return c.includes('white') || c === '#ffffff' || c === 'white';
+        });
+
+        const variants = (whiteVariants.length > 0 ? whiteVariants : allVariants.slice(0, 12)).map(v => ({
+            id: v.id,
+            name: v.name,
+            sku: `PF-${product.id}-${v.id}`,
+            size: v.size || extractSize(v.name),
+            color: v.color || 'White',
+            inStock: v.availability_status?.region?.some(r => r.status === 'in_stock') ?? true,
+            availability: v.in_stock !== false ? 'available' : 'unavailable',
+            retailPrice: v.price,
+            currency: 'USD'
+        }));
+
+        return {
+            id: product.id,
+            name: target.name,
+            thumbnail: product.image,
+            variants,
+            type: 'catalog'
+        };
+    }
+
+    function extractSize(name) {
+        const match = name?.match(/\b(XS|S|M|L|XL|2XL|3XL|4XL|5XL)\b/i);
+        return match ? match[1].toUpperCase() : '—';
+    }
+
+    function extractColor(name) {
+        const match = name?.match(/\/ ([\w\s]+)$/);
+        return match ? match[1].trim() : 'White';
+    }
+
+    // ---- Render ----
+
+    function renderDashboard(products) {
+        // Summary
+        const allVariants = products.flatMap(p => p.variants);
+        const inStock = allVariants.filter(v => v.inStock).length;
+        const outOfStock = allVariants.length - inStock;
+
+        document.getElementById('totalProducts').textContent = products.length;
+        document.getElementById('totalVariants').textContent = allVariants.length;
+        document.getElementById('inStockCount').textContent = inStock;
+        document.getElementById('outOfStockCount').textContent = outOfStock;
+
+        // Product cards
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(renderProductCard).join('');
+
+        // Availability matrix
+        renderMatrix(products);
+    }
+
+    function renderProductCard(product) {
+        const inStock = product.variants.filter(v => v.inStock).length;
+        const total = product.variants.length;
+        const pct = total > 0 ? Math.round((inStock / total) * 100) : 0;
+
+        let badgeClass = 'stock-in', badgeText = 'In Stock';
+        if (pct === 0) { badgeClass = 'stock-out'; badgeText = 'Out of Stock'; }
+        else if (pct < 60) { badgeClass = 'stock-low'; badgeText = 'Low Stock'; }
+
+        const thumbHtml = product.thumbnail
+            ? `<img src="${escapeHtml(product.thumbnail)}" alt="${escapeHtml(product.name)}">`
+            : `<div class="placeholder">&#128085;</div>`;
+
+        const variantRows = product.variants.map(v => {
+            const dotClass = v.inStock ? 'available' : 'unavailable';
+            const stockClass = v.inStock ? 'high' : 'low';
+            const stockText = v.inStock ? 'Available' : 'Sold Out';
+            return `
+                <div class="variant-row">
+                    <div><span class="size">${escapeHtml(v.size)}</span> <span class="sku">${escapeHtml(v.sku)}</span></div>
+                    <div>${escapeHtml(v.color)}</div>
+                    <div><span class="availability-dot ${dotClass}"></span>${stockText}</div>
+                    <div class="stock-num ${stockClass}">${v.retailPrice ? '$' + v.retailPrice : '—'}</div>
+                </div>`;
+        }).join('');
+
+        return `
+            <div class="product-card fade-in">
+                <div class="product-header">
+                    <div class="product-thumb">${thumbHtml}</div>
+                    <div class="product-info">
+                        <h3>${escapeHtml(product.name)}</h3>
+                        <div class="product-id">ID: ${product.id} · ${inStock}/${total} sizes in stock (${pct}%)</div>
+                    </div>
+                    <span class="stock-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="variant-table">
+                    <div class="table-header">
+                        <div>Size / SKU</div>
+                        <div>Color</div>
+                        <div>Status</div>
+                        <div>Price</div>
+                    </div>
+                    <div class="variant-list">${variantRows}</div>
+                </div>
+            </div>`;
+    }
+
+    function renderMatrix(products) {
+        const sizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
+        const container = document.getElementById('matrixTable');
+
+        let html = '<table><thead><tr><th style="text-align:left">Product</th>';
+        sizes.forEach(s => { html += `<th>${s}</th>`; });
+        html += '</tr></thead><tbody>';
+
+        for (const p of products) {
+            html += `<tr><td>${escapeHtml(p.name.length > 35 ? p.name.slice(0, 35) + '…' : p.name)}</td>`;
+            for (const size of sizes) {
+                const variant = p.variants.find(v => v.size === size);
+                if (!variant) {
+                    html += '<td><span class="matrix-cell none">—</span></td>';
+                } else if (variant.inStock) {
+                    html += '<td><span class="matrix-cell high">&#10003;</span></td>';
+                } else {
+                    html += '<td><span class="matrix-cell low">&#10007;</span></td>';
+                }
+            }
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // ---- Demo Data ----
+
+    function loadDemoData() {
+        showDashboard();
+        setStatus('connected', 'Demo Mode');
+
+        const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
+
+        const demoProducts = TARGET_CATALOG_PRODUCTS.map((t, i) => ({
+            id: t.catalogId,
+            name: t.name,
+            thumbnail: null,
+            type: 'demo',
+            variants: SIZES.map((size, j) => ({
+                id: `${t.catalogId}-${j}`,
+                name: `${t.name} / ${size} / White`,
+                sku: `PF-${t.catalogId}-${size}`,
+                size,
+                color: 'White',
+                inStock: Math.random() > 0.15, // ~85% in stock
+                availability: Math.random() > 0.15 ? 'available' : 'unavailable',
+                retailPrice: (18 + Math.floor(Math.random() * 12)).toFixed(2),
+                currency: 'USD'
+            }))
+        }));
+
+        inventoryData = demoProducts;
+        renderDashboard(demoProducts);
+        document.getElementById('lastUpdated').textContent = `Demo data — ${new Date().toLocaleTimeString()}`;
+    }
+
+    // ---- Utilities ----
+
+    function showDashboard() {
+        document.getElementById('setupPanel').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('refreshBtn').classList.remove('hidden');
+    }
+
+    function setStatus(type, text) {
+        const badge = document.getElementById('statusBadge');
+        badge.className = `status-badge ${type === 'connected' ? '' : type === 'loading' ? 'loading' : 'disconnected'}`;
+        document.getElementById('statusText').textContent = text;
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('errorMsg');
+        el.textContent = msg; el.style.display = 'block';
+    }
+
+    function hideError() {
+        document.getElementById('errorMsg').style.display = 'none';
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+        return String(str).replace(/[&<>"']/g, c => map[c]);
+    }
+
+    function startAutoRefresh() {
+        if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+        autoRefreshTimer = setInterval(refreshInventory, 60000); // Every 60s
+    }
+
+    // ---- Init ----
+    (function init() {
+        const saved = localStorage.getItem('printful_api_key');
+        if (saved) {
+            document.getElementById('apiKeyInput').value = saved;
+        }
+    })();
+</script>
+</body>
+</html>
