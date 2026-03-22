@@ -466,10 +466,10 @@
     let autoRefreshTimer = null;
 
     // 5 popular blank white t-shirt catalog IDs (Printful product catalog)
-    // These are Printful catalog product IDs for well-known blank white tees
+    // Verified against Printful API v2 catalog
     const TARGET_CATALOG_PRODUCTS = [
-        { catalogId: 586, name: 'Bella+Canvas 3001 Unisex Jersey Tee' },
-        { catalogId: 71,  name: 'Gildan 5000 Heavy Cotton Tee' },
+        { catalogId: 71,  name: 'Bella+Canvas 3001 Unisex Staple Tee' },
+        { catalogId: 145, name: 'Gildan 5000 Heavy Cotton Tee' },
         { catalogId: 380, name: 'Gildan 64000 Softstyle Tee' },
         { catalogId: 389, name: 'Next Level 3600 Premium Cotton Tee' },
         { catalogId: 473, name: 'Comfort Colors 1717 Garment-Dyed Tee' }
@@ -548,22 +548,22 @@
                 }
             }
 
-            // Strategy 2: If no store products, fetch catalog product info
+            // Strategy 2: If no store products, fetch catalog product info via v2 API
             if (products.length === 0) {
-                const catalogDetails = await Promise.all(
-                    TARGET_CATALOG_PRODUCTS.map(p =>
-                        printfulGet(`/products/${p.catalogId}`).catch(() => null)
-                    )
-                );
+                // Fetch catalog variants and availability in parallel per product
+                const catalogFetches = TARGET_CATALOG_PRODUCTS.map(async (p) => {
+                    const [varRes, availRes] = await Promise.all([
+                        printfulGet(`/v2/catalog-products/${p.catalogId}/catalog-variants`).catch(() => null),
+                        printfulGet(`/v2/catalog-products/${p.catalogId}/availability`).catch(() => null)
+                    ]);
+                    return { target: p, variants: varRes, availability: availRes };
+                });
 
-                for (let i = 0; i < catalogDetails.length; i++) {
-                    if (!catalogDetails[i]?.result) continue;
-                    const cat = catalogDetails[i].result;
-                    // Get variant details (filter to white / size info)
-                    const varRes = await printfulGet(`/products/${cat.product.id}`).catch(() => null);
-                    if (varRes?.result) {
-                        products.push(normalizeCatalogProduct(varRes.result, TARGET_CATALOG_PRODUCTS[i]));
-                    }
+                const results = await Promise.all(catalogFetches);
+
+                for (const { target, variants, availability } of results) {
+                    if (!variants?.data) continue;
+                    products.push(normalizeCatalogProduct(variants.data, availability?.data || [], target));
                 }
             }
 
@@ -602,32 +602,53 @@
         };
     }
 
-    function normalizeCatalogProduct(catData, target) {
-        const product = catData.product || {};
-        const allVariants = catData.variants || [];
+    function normalizeCatalogProduct(variantData, availabilityData, target) {
+        // Build availability lookup: variant_id -> status string
+        const availMap = {};
+        for (const entry of availabilityData) {
+            const vid = entry.catalog_variant_id;
+            // Check North America first, then any region
+            let status = 'unknown';
+            for (const tech of (entry.techniques || [])) {
+                for (const region of (tech.selling_regions || [])) {
+                    if (region.name === 'north_america') {
+                        status = region.availability || 'unknown';
+                        break;
+                    }
+                    if (status === 'unknown') status = region.availability || 'unknown';
+                }
+            }
+            availMap[vid] = status;
+        }
 
-        // Filter to white variants
-        const whiteVariants = allVariants.filter(v => {
+        // Filter to white variants only
+        const whiteVariants = variantData.filter(v => {
             const c = (v.color || '').toLowerCase();
-            return c.includes('white') || c === '#ffffff' || c === 'white';
+            return c.includes('white') || (v.color_code || '').toLowerCase() === '#ffffff';
         });
 
-        const variants = (whiteVariants.length > 0 ? whiteVariants : allVariants.slice(0, 12)).map(v => ({
-            id: v.id,
-            name: v.name,
-            sku: `PF-${product.id}-${v.id}`,
-            size: v.size || extractSize(v.name),
-            color: v.color || 'White',
-            inStock: v.availability_status?.region?.some(r => r.status === 'in_stock') ?? true,
-            availability: v.in_stock !== false ? 'available' : 'unavailable',
-            retailPrice: v.price,
-            currency: 'USD'
-        }));
+        const useVariants = whiteVariants.length > 0 ? whiteVariants : variantData.slice(0, 12);
+
+        const variants = useVariants.map(v => {
+            const avail = availMap[v.id] || 'unknown';
+            const isInStock = avail === 'in stock' || avail === 'in_stock' || avail === 'stocked on demand';
+            return {
+                id: v.id,
+                name: v.name,
+                sku: `PF-${target.catalogId}-${v.id}`,
+                size: v.size || extractSize(v.name),
+                color: v.color || 'White',
+                inStock: isInStock,
+                availability: avail,
+                retailPrice: null, // prices come from a separate endpoint
+                currency: 'USD'
+            };
+        });
 
         return {
-            id: product.id,
+            id: target.catalogId,
             name: target.name,
-            thumbnail: product.image,
+            thumbnail: useVariants[0]?.image || null,
             variants,
             type: 'catalog'
         };
@@ -641,6 +662,22 @@
     function extractColor(name) {
         const match = name?.match(/\/ ([\w\s]+)$/);
         return match ? match[1].trim() : 'White';
+    }
+
+    // ---- Helpers ----
+
+    function formatAvailability(status, inStock) {
+        const map = {
+            'in stock': 'In Stock',
+            'in_stock': 'In Stock',
+            'stocked on demand': 'On Demand',
+            'stocked_on_demand': 'On Demand',
+            'supplier out of stock': 'Supplier OOS',
+            'supplier_out_of_stock': 'Supplier OOS',
+            'discontinued': 'Discontinued'
+        };
+        if (map[status]) return map[status];
+        return inStock ? 'Available' : 'Unavailable';
     }
 
     // ---- Render ----
@@ -678,9 +715,9 @@
             : `<div class="placeholder">&#128085;</div>`;
 
         const variantRows = product.variants.map(v => {
-            const dotClass = v.inStock ? 'available' : 'unavailable';
+            const dotClass = v.inStock ? (v.availability === 'stocked on demand' ? 'limited' : 'available') : 'unavailable';
             const stockClass = v.inStock ? 'high' : 'low';
-            const stockText = v.inStock ? 'Available' : 'Sold Out';
+            const stockText = formatAvailability(v.availability, v.inStock);
             return `
                 <div class="variant-row">
                     <div><span class="size">${escapeHtml(v.size)}</span> <span class="sku">${escapeHtml(v.sku)}</span></div>
