@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Mockups API — Test Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #000a14;
+            --panel: rgba(0, 18, 40, 0.92);
+            --card: rgba(0, 34, 68, 0.6);
+            --border: rgba(0, 170, 255, 0.18);
+            --border-strong: rgba(0, 170, 255, 0.45);
+            --text: #ffffff;
+            --text-secondary: #8cb4d8;
+            --text-muted: #5a8ab5;
+            --glow-blue: #00aaff;
+            --glow-cyan: #00ffcc;
+            --accent-green: #00e676;
+            --accent-red: #ff5370;
+            --accent-orange: #ffab40;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 20px 80px;
+            background-image:
+                radial-gradient(circle at 20% 10%, rgba(0, 170, 255, 0.08), transparent 50%),
+                radial-gradient(circle at 80% 90%, rgba(0, 255, 204, 0.05), transparent 50%);
+        }
+
+        .wrap {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            background: linear-gradient(135deg, #fff, var(--glow-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        header code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: rgba(0, 170, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--glow-cyan);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 760px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-strong);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--glow-blue), var(--glow-cyan));
+            border: none;
+            border-radius: 10px;
+            padding: 11px 22px;
+            color: #001428;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:hover:not(:disabled) {
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+        }
+
+        button.secondary:hover:not(:disabled) {
+            color: var(--text);
+            box-shadow: none;
+        }
+
+        .status {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .status.loading { color: var(--accent-orange); }
+        .status.success { color: var(--accent-green); }
+        .status.error { color: var(--accent-red); }
+
+        .result-card {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .result-card.visible {
+            display: block;
+        }
+
+        .result-image-wrap {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .result-image-wrap img {
+            max-width: 100%;
+            max-height: 480px;
+            border-radius: 6px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .result-image-wrap a {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--glow-cyan);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+        }
+
+        .result-image-wrap a:hover {
+            text-decoration: underline;
+        }
+
+        pre.json {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            line-height: 1.5;
+            max-height: 320px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .save-key {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .save-key input {
+            accent-color: var(--glow-blue);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <h1>Dynamic Mockups API — Test Page</h1>
+            <p>
+                Sends a <code>POST</code> to <code>https://app.dynamicmockups.com/api/v1/renders</code>
+                with the configured payload. Enter your <code>x-api-key</code> below and press Render.
+                The key is only kept in your browser's <code>localStorage</code> if you check "remember" — it is never committed to this repo.
+            </p>
+        </header>
+
+        <div class="grid">
+            <!-- Request Config -->
+            <div class="card">
+                <div class="card-title">Request</div>
+
+                <div class="field">
+                    <label for="apiKey">x-api-key</label>
+                    <input type="password" id="apiKey" placeholder="YOUR_API_KEY" autocomplete="off" />
+                    <label class="save-key">
+                        <input type="checkbox" id="rememberKey" />
+                        Remember in localStorage on this device
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label for="mockupUuid">mockup_uuid</label>
+                    <input type="text" id="mockupUuid" value="9ffb48c2-264f-42b9-ab86-858c410422cc" />
+                </div>
+
+                <div class="field">
+                    <label for="smartObjectUuid">smart_objects[0].uuid</label>
+                    <input type="text" id="smartObjectUuid" value="cc864498-b8d1-495a-9968-45937edf42b3" />
+                </div>
+
+                <div class="field">
+                    <label for="assetUrl">smart_objects[0].asset.url</label>
+                    <textarea id="assetUrl">https://app-dynamicmockups-production.s3.eu-central-1.amazonaws.com/static/api_sandbox_icon.png</textarea>
+                    <div class="hint">Defaults to the Dynamic Mockups API sandbox icon.</div>
+                </div>
+
+                <div class="row">
+                    <button id="renderBtn">Render Mockup</button>
+                    <button id="resetBtn" class="secondary">Reset</button>
+                    <div class="status" id="status">Ready.</div>
+                </div>
+            </div>
+
+            <!-- Request Preview -->
+            <div class="card">
+                <div class="card-title">Request Body Preview</div>
+                <pre class="json" id="requestPreview"></pre>
+                <div class="hint" style="margin-top:10px">
+                    This is the JSON payload that will be sent to the API. It updates live as you edit the fields on the left.
+                </div>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div class="card result-card" id="resultCard">
+            <div class="card-title">Response</div>
+            <div class="result-image-wrap" id="imageWrap" style="display:none">
+                <img id="resultImage" alt="Rendered mockup" />
+                <div>
+                    <a id="resultImageLink" href="#" target="_blank" rel="noopener"></a>
+                </div>
+            </div>
+            <pre class="json" id="responseJson"></pre>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id);
+            const apiKeyInput = $('apiKey');
+            const rememberKeyInput = $('rememberKey');
+            const mockupUuidInput = $('mockupUuid');
+            const smartObjectUuidInput = $('smartObjectUuid');
+            const assetUrlInput = $('assetUrl');
+            const renderBtn = $('renderBtn');
+            const resetBtn = $('resetBtn');
+            const statusEl = $('status');
+            const requestPreview = $('requestPreview');
+            const resultCard = $('resultCard');
+            const imageWrap = $('imageWrap');
+            const resultImage = $('resultImage');
+            const resultImageLink = $('resultImageLink');
+            const responseJson = $('responseJson');
+
+            const LS_KEY_API = 'dm_api_key';
+            const LS_KEY_REMEMBER = 'dm_remember_key';
+
+            const DEFAULTS = {
+                mockupUuid: '9ffb48c2-264f-42b9-ab86-858c410422cc',
+                smartObjectUuid: 'cc864498-b8d1-495a-9968-45937edf42b3',
+                assetUrl: 'https://app-dynamicmockups-production.s3.eu-central-1.amazonaws.com/static/api_sandbox_icon.png'
+            };
+
+            function buildPayload() {
+                return {
+                    mockup_uuid: mockupUuidInput.value.trim(),
+                    smart_objects: [{
+                        uuid: smartObjectUuidInput.value.trim(),
+                        asset: {
+                            url: assetUrlInput.value.trim()
+                        }
+                    }]
+                };
+            }
+
+            function updatePreview() {
+                requestPreview.textContent = JSON.stringify(buildPayload(), null, 2);
+            }
+
+            function setStatus(msg, cls) {
+                statusEl.textContent = msg;
+                statusEl.className = 'status' + (cls ? ' ' + cls : '');
+            }
+
+            // Walk response for any string that looks like an image URL.
+            function findImageUrl(obj) {
+                if (!obj || typeof obj !== 'object') return null;
+                const imageExtRe = /\.(png|jpe?g|webp|gif)(\?|$)/i;
+                const priorityKeys = ['export_path', 'export_url', 'image_url', 'url', 'render_url'];
+                // Prefer known keys first.
+                for (const key of priorityKeys) {
+                    const v = findKey(obj, key);
+                    if (typeof v === 'string' && /^https?:\/\//i.test(v)) return v;
+                }
+                // Fallback: any string value that looks like an image URL.
+                let found = null;
+                JSON.stringify(obj, (k, v) => {
+                    if (!found && typeof v === 'string' && /^https?:\/\//i.test(v) && imageExtRe.test(v)) {
+                        found = v;
+                    }
+                    return v;
+                });
+                return found;
+            }
+
+            function findKey(obj, key) {
+                let result;
+                JSON.stringify(obj, (k, v) => {
+                    if (result === undefined && k === key) result = v;
+                    return v;
+                });
+                return result;
+            }
+
+            async function render() {
+                const apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    setStatus('Missing API key.', 'error');
+                    apiKeyInput.focus();
+                    return;
+                }
+
+                // Persist key if remember is on.
+                try {
+                    if (rememberKeyInput.checked) {
+                        localStorage.setItem(LS_KEY_API, apiKey);
+                        localStorage.setItem(LS_KEY_REMEMBER, '1');
+                    } else {
+                        localStorage.removeItem(LS_KEY_API);
+                        localStorage.setItem(LS_KEY_REMEMBER, '0');
+                    }
+                } catch (_) { /* ignore storage errors */ }
+
+                const payload = buildPayload();
+                renderBtn.disabled = true;
+                setStatus('Rendering...', 'loading');
+                resultCard.classList.remove('visible');
+                imageWrap.style.display = 'none';
+                responseJson.textContent = '';
+
+                const started = performance.now();
+                try {
+                    const res = await fetch('https://app.dynamicmockups.com/api/v1/renders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'x-api-key': apiKey
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const elapsed = Math.round(performance.now() - started);
+                    const text = await res.text();
+                    let data;
+                    try { data = JSON.parse(text); } catch (_) { data = text; }
+
+                    resultCard.classList.add('visible');
+                    responseJson.textContent = typeof data === 'string'
+                        ? data
+                        : JSON.stringify(data, null, 2);
+
+                    if (!res.ok) {
+                        setStatus('HTTP ' + res.status + ' · ' + elapsed + 'ms', 'error');
+                        return;
+                    }
+
+                    const imgUrl = findImageUrl(data);
+                    if (imgUrl) {
+                        resultImage.src = imgUrl;
+                        resultImageLink.href = imgUrl;
+                        resultImageLink.textContent = imgUrl;
+                        imageWrap.style.display = 'block';
+                    }
+                    setStatus('OK · ' + elapsed + 'ms', 'success');
+                } catch (err) {
+                    resultCard.classList.add('visible');
+                    responseJson.textContent = String(err && err.stack || err);
+                    setStatus('Network error', 'error');
+                } finally {
+                    renderBtn.disabled = false;
+                }
+            }
+
+            function reset() {
+                mockupUuidInput.value = DEFAULTS.mockupUuid;
+                smartObjectUuidInput.value = DEFAULTS.smartObjectUuid;
+                assetUrlInput.value = DEFAULTS.assetUrl;
+                updatePreview();
+                setStatus('Ready.');
+                resultCard.classList.remove('visible');
+            }
+
+            // Restore saved key preference.
+            try {
+                const remembered = localStorage.getItem(LS_KEY_REMEMBER) === '1';
+                rememberKeyInput.checked = remembered;
+                if (remembered) {
+                    const saved = localStorage.getItem(LS_KEY_API) || '';
+                    if (saved) apiKeyInput.value = saved;
+                }
+            } catch (_) { /* ignore */ }
+
+            [mockupUuidInput, smartObjectUuidInput, assetUrlInput].forEach(el => {
+                el.addEventListener('input', updatePreview);
+            });
+            renderBtn.addEventListener('click', render);
+            resetBtn.addEventListener('click', reset);
+
+            // Submit on Enter inside simple inputs.
+            [apiKeyInput, mockupUuidInput, smartObjectUuidInput].forEach(el => {
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); render(); }
+                });
+            });
+
+            updatePreview();
+        })();
+    </script>
+</body>
+</html>
